@@ -4,36 +4,44 @@ import React, { useState, useEffect } from "react";
 function Game() {
   const location = useLocation();
   const [clickedCircle, setClickedCircle] = useState(false);
+  const [numbers, setNumbers] = useState([]);
 
+  useEffect(() => {
+    generateNumbers();
+  }, []);
 
   function show() {
     setClickedCircle(true);
     const timer = setTimeout(() => {
       setClickedCircle(false); 
-    }, 1000); 
+    }, 2000); 
 
-    
     return () => clearTimeout(timer);
   }
 
-  
-  function generateTable() {
-    const table = [];
-    const numbers = [];
-  
+
+  function generateNumbers() {
     const totalCircles = location.state.settings.size * location.state.settings.size;
     const halfCircles = Math.floor(totalCircles / 2);
+    const newNumbers = [];
+  
     for (let i = 0; i < halfCircles; i++) {
-      numbers.push(i + 1);
+      newNumbers.push(i + 1);
     }
     for (let i = 0; i < halfCircles; i++) {
-      numbers.push((i % halfCircles) + 1);
+      newNumbers.push((i % halfCircles) + 1);
     }
-    for (let i = numbers.length - 1; i > 0; i--) {
+    for (let i = newNumbers.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
-      [numbers[i], numbers[j]] = [numbers[j], numbers[i]];
+      [newNumbers[i], newNumbers[j]] = [newNumbers[j], newNumbers[i]];
     }
   
+    setNumbers(newNumbers);
+  }
+
+  function generateTable() {
+    const table = [];
+    
     let index = 0;
   
     for (let i = 0; i < location.state.settings.size; i++) {
@@ -42,8 +50,6 @@ function Game() {
       for (let j = 0; j < location.state.settings.size; j++) {
         const number = numbers[index];
         index++;
-        
-       
 
         circles.push(
           <div
