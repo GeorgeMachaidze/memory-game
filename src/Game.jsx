@@ -8,20 +8,28 @@ function Game() {
   const [userChosenNumbers, setUserChosenNumbers] = useState([]);
   const [prevClickedCircle, setPrevClickedCircle] = useState(null);
   const [isCircleClickable, setIsCircleClickable] = useState([]);
+  const [matchedNumbers, setMatchedNumbers] = useState([]);
+  const [timer, setTimer] = useState(0);
+  const lastElement = userChosenNumbers[userChosenNumbers.length - 1];
 
   useEffect(() => {
     generateNumbers();
+    // startTimer();
   }, []);
+  useEffect(() => {
+    if (matchedNumbers.length === numbers.length) {
+      // stopTimer();
+      // Game has ended, do something here (e.g., show game over message)
+    }
+  }, [matchedNumbers]);
 
   function show(index) {
-    if (!isCircleClickable[index]) {
+    let number = numbers[index];
+    if (!isCircleClickable[index] || matchedNumbers.includes(number)) {
       return;
     }
 
-    const number = numbers[index];
     pushToArray(number);
-    console.log(userChosenNumbers);
-    const lastElement = userChosenNumbers[userChosenNumbers.length - 1];
 
     if (number !== lastElement) {
       setIsCircleClickable((prevClickable) => {
@@ -29,11 +37,14 @@ function Game() {
         updatedClickable[prevClickedCircle] = true;
         return updatedClickable;
       });
+    } else {
+      setClickedCircle(number);
+      setPrevClickedCircle(lastElement);
+      setMatchedNumbers((prevMatched) => [...prevMatched, number]);
     }
 
     setClickedCircle(index);
     setPrevClickedCircle(index);
-    console.log(lastElement);
   }
 
   const pushToArray = (number) => {
@@ -45,10 +56,6 @@ function Game() {
       const updatedClickable = [...isCircleClickable];
       updatedClickable[clickedCircle] = false;
       setIsCircleClickable(updatedClickable);
-
-      setTimeout(() => {
-        setClickedCircle(null);
-      }, 1000);
     }
   }, [clickedCircle]);
 
@@ -93,7 +100,11 @@ function Game() {
             }}
           >
             <span
-              className={`${clickedCircle === circleIndex ? "" : "hidden"}`}
+              className={`${
+                matchedNumbers.includes(number) || clickedCircle === circleIndex
+                  ? ""
+                  : "hidden"
+              }`}
             >
               {number}
             </span>
@@ -110,7 +121,18 @@ function Game() {
 
     return table;
   }
-
+  function startTimer() {
+    const intervalId = setInterval(() => {
+      setTimer((prevTimer) => prevTimer + 0.25);
+    }, 1000);
+    return () => clearInterval(intervalId);
+  }
+  function stopTimer() {
+    // You can perform any logic here when the timer is stopped
+    // For example, display the final time or calculate the duration
+    // You can access the timer value to display or use it as needed
+    clearInterval(startTimer());
+  }
   return (
     <>
       <div className="p-5">
@@ -121,12 +143,14 @@ function Game() {
           </div>
         </div>
         <div className="mt-[85px] ml-5 mr-5">{generateTable()}</div>
-        <div className="flex gap-6 mt-[100px]">
-          <div className="bg-gray">
-            <h1>Time</h1>
+        <div className="flex gap-6 mt-[100px] justify-center">
+          <div className="bg-gray pr-[35px] pl-[35px] pt-[10px] pb-[10px] rounded-[5px] justify-center items-center">
+            <h1 className="text-tGray  text-[15px]">Time</h1>
+            <h1 className="text-center">{timer}</h1>
           </div>
-          <div className="bg-gray">
-            <h1>Moves</h1>
+          <div className="bg-gray pr-[35px] pl-[35px] pt-[10px] pb-[10px] rounded-[5px] justify-center items-center">
+            <h1 className="text-tGray text-[15px]">Moves</h1>
+            <h1 className="text-center">{userChosenNumbers.length}</h1>
           </div>
         </div>
       </div>
