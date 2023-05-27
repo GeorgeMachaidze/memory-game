@@ -1,17 +1,15 @@
 /** @type {import('tailwindcss').Config} */
 export default {
-  content: ["./index.html",
-  "./src/**/*.{js,ts,jsx,tsx}",],
+  content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
   theme: {
     extend: {
-      colors:{
+      colors: {
         background: "#152938",
         yellow: "#FDA214",
-        gray: "#BCCED9",
-        tGray:"#7191A5"
-      }
+        gray: "rgba(223, 231, 236, 1)",
+        tGray: "#7191A5",
+      },
     },
   },
   plugins: [],
-}
-
+};

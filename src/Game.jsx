@@ -1,5 +1,6 @@
 import { useLocation } from "react-router-dom";
 import React, { useState, useEffect } from "react";
+import { Form, Link } from "react-router-dom";
 
 function Game() {
   const location = useLocation();
@@ -10,18 +11,13 @@ function Game() {
   const [isCircleClickable, setIsCircleClickable] = useState([]);
   const [matchedNumbers, setMatchedNumbers] = useState([]);
   const [timer, setTimer] = useState(0);
+  const [gameEnded, setGameEnded] = useState(false);
   const lastElement = userChosenNumbers[userChosenNumbers.length - 1];
 
   useEffect(() => {
     generateNumbers();
     // startTimer();
   }, []);
-  useEffect(() => {
-    if (matchedNumbers.length === numbers.length) {
-      // stopTimer();
-      // Game has ended, do something here (e.g., show game over message)
-    }
-  }, [matchedNumbers]);
 
   function show(index) {
     let number = numbers[index];
@@ -121,18 +117,31 @@ function Game() {
 
     return table;
   }
+  useEffect(() => {
+    if (
+      matchedNumbers.length === numbers.length / 2 &&
+      numbers.length / 2 > 0
+    ) {
+      stopTimer();
+      setGameEnded(true);
+    }
+  }, [matchedNumbers, numbers.length]);
+
   function startTimer() {
     const intervalId = setInterval(() => {
-      setTimer((prevTimer) => prevTimer + 0.25);
+      setTimer((prevTimer) => prevTimer + 0.5);
     }, 1000);
     return () => clearInterval(intervalId);
   }
+
   function stopTimer() {
-    // You can perform any logic here when the timer is stopped
-    // For example, display the final time or calculate the duration
-    // You can access the timer value to display or use it as needed
-    clearInterval(startTimer());
+    // clearInterval(startTimer());
   }
+
+  function refresh() {
+    window.location.reload();
+  }
+
   return (
     <>
       <div className="p-5">
@@ -153,6 +162,43 @@ function Game() {
             <h1 className="text-center">{userChosenNumbers.length}</h1>
           </div>
         </div>
+        {gameEnded && (
+          <div className="fixed top-0 left-0 w-screen h-screen flex items-center justify-center bg-black bg-opacity-50">
+            <div className="bg-white fixed top-0  flex flex-col  mt-[146px] pt-[32px] pb-[24px] pl-[24px] pr-[24px] rounded-lg">
+              <h1 className="text-2xl font-bold text-background text-center">
+                You did it!
+              </h1>
+              <p className="text-center text-[14px] text-tGray">
+                Game over! Here’s how you got on…
+              </p>
+              <div className="mt-[24px] flex flex-row justify-between bg-gray rounded-lg p-[14px]">
+                <p className="text-[13px] text-center text-tGray p-0">
+                  Time Elapsed
+                </p>
+                <p className="text-background">{timer}</p>
+              </div>
+              <div className="mt-2 flex flex-row justify-between bg-gray rounded-lg p-[14px]">
+                <p className="text-[13px] text-center text-tGray p-0">
+                  Moves Taken
+                </p>
+                <p className="text-background">
+                  {userChosenNumbers.length} Moves
+                </p>
+              </div>
+              <div
+                className="bg-yellow rounded-[26px] mt-[24px] pt-3 pb-3"
+                onClick={refresh}
+              >
+                <p className="text-center text-white">Restart</p>
+              </div>
+              <Link to={{ pathname: "/" }}>
+                <div className="bg-gray rounded-[26px] mt-[16px] pt-3 pb-3">
+                  <p className="text-center text-background">Setup New Game</p>
+                </div>
+              </Link>
+            </div>
+          </div>
+        )}
       </div>
     </>
   );
