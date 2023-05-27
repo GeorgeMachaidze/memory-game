@@ -12,6 +12,7 @@ function Game() {
   const [matchedNumbers, setMatchedNumbers] = useState([]);
   const [timer, setTimer] = useState(0);
   const [gameEnded, setGameEnded] = useState(false);
+  const [menu, setMenu] = useState(false);
   const lastElement = userChosenNumbers[userChosenNumbers.length - 1];
 
   useEffect(() => {
@@ -133,7 +134,9 @@ function Game() {
     }, 1000);
     return () => clearInterval(intervalId);
   }
-
+  function showMenu() {
+    setMenu(!menu);
+  }
   function stopTimer() {
     // clearInterval(startTimer());
   }
@@ -148,7 +151,12 @@ function Game() {
         <div className="flex justify-between items-center">
           <h1 className="text-[24px]">memory</h1>
           <div className="bg-yellow rounded-[26px]">
-            <h1 className="text-[16px] pt-2 pb-2 pl-4 pr-4 text-white">Menu</h1>
+            <h1
+              className="text-[16px] pt-2 pb-2 pl-4 pr-4 text-white"
+              onClick={showMenu}
+            >
+              Menu
+            </h1>
           </div>
         </div>
         <div className="mt-[85px] ml-5 mr-5">{generateTable()}</div>
@@ -196,6 +204,29 @@ function Game() {
                   <p className="text-center text-background">Setup New Game</p>
                 </div>
               </Link>
+            </div>
+          </div>
+        )}
+        {menu && (
+          <div className="fixed top-0 left-0 w-screen h-screen  flex items-center justify-center bg-black pl-[24px] pr-[24px] bg-opacity-50 ">
+            <div className="bg-white fixed top-20 flex flex-col  mt-[146px] w-[327px]  pb-[24px] pl-[24px] pr-[24px] rounded-lg ">
+              <div
+                className="bg-yellow rounded-[26px]  mt-[24px] pt-3 pb-3"
+                onClick={refresh}
+              >
+                <p className="text-center text-white">Restart</p>
+              </div>
+              <Link to={{ pathname: "/" }}>
+                <div className="bg-gray rounded-[26px] mt-[16px] pt-3 pb-3">
+                  <p className="text-center text-background">New Game</p>
+                </div>
+              </Link>
+              <div
+                className="bg-yellow rounded-[26px] mt-[24px] pt-3 pb-3"
+                onClick={showMenu}
+              >
+                <p className="text-center text-white">Resume Game</p>
+              </div>
             </div>
           </div>
         )}
