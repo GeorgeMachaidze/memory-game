@@ -116,9 +116,14 @@ function Game() {
         circles.push(
           <div
             key={circleIndex}
-            className={`bg-background w-[73.53px] h-[73.53px] mt-3 rounded-full flex items-center justify-center text-white text-[40px] ${
+            className={`bg-background ${
+              location.state.settings.size === 4 ? "w-[74px] " : "w-[46px]"
+            } ${location.state.settings.size === 4 ? "h-[74px]" : "h-[46px]"}
+            ${location.state.settings.size === 4 ? "h-[74px]" : "h-[46px]"}
+            ${
               matchedNumbers.includes(number) ? "bg-yellow" : "bg-background"
-            } ${clickedCircle === circleIndex ? "bg-gray" : ""}`}
+            } ${clickedCircle === circleIndex ? "bg-gray" : ""}
+             mt-3 rounded-full flex items-center justify-center text-white text-40px `}
             onClick={() => {
               show(circleIndex);
             }}
@@ -128,6 +133,10 @@ function Game() {
                 matchedNumbers.includes(number) || clickedCircle === circleIndex
                   ? ""
                   : "hidden"
+              } ${
+                location.state.settings.size === 4
+                  ? "text-[40px]"
+                  : "text-[24px]"
               }`}
             >
               {number}
@@ -180,7 +189,10 @@ function Game() {
             </h1>
           </div>
         </div>
-        <div className="mt-[85px] flex  gap-x-3 flex-wrap ">
+        <div
+          className={`mt-[85px] flex  gap-x-3 flex-wrap 
+        ${location.state.settings.size === 4 ? "gap-x-3" : "gap-x-[9px]"}`}
+        >
           {generateTable()}
         </div>
         <div className="flex gap-6 mt-[100px] justify-center">
