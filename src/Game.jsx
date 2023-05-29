@@ -10,14 +10,31 @@ function Game() {
   const [prevClickedCircle, setPrevClickedCircle] = useState(null);
   const [isCircleClickable, setIsCircleClickable] = useState([]);
   const [matchedNumbers, setMatchedNumbers] = useState([]);
-  const [timer, setTimer] = useState(0);
+  const [minutes, setMinutes] = useState(0);
+  const [seconds, setSeconds] = useState(0);
+  const [myInterval, setMyInterval] = useState(null);
   const [gameEnded, setGameEnded] = useState(false);
   const [menu, setMenu] = useState(false);
   const lastElement = userChosenNumbers[userChosenNumbers.length - 1];
+  let interval;
 
   useEffect(() => {
     generateNumbers();
-    // startTimer();
+    let interval = setInterval(() => {
+      setSeconds((prevSeconds) => {
+        if (prevSeconds === 59) {
+          setMinutes((prevMinutes) => prevMinutes + 1);
+          return 0;
+        } else {
+          return prevSeconds + 1;
+        }
+      });
+    }, 1000);
+    setMyInterval(interval);
+
+    return () => {
+      clearInterval(interval);
+    };
   }, []);
 
   function show(index) {
@@ -38,6 +55,14 @@ function Game() {
       setClickedCircle(number);
       setPrevClickedCircle(lastElement);
       setMatchedNumbers((prevMatched) => [...prevMatched, number]);
+    }
+
+    if (clickedCircle !== null && clickedCircle !== index) {
+      setIsCircleClickable((prevClickable) => {
+        const updatedClickable = [...prevClickable];
+        updatedClickable[clickedCircle] = true;
+        return updatedClickable;
+      });
     }
 
     setClickedCircle(index);
@@ -91,7 +116,9 @@ function Game() {
         circles.push(
           <div
             key={circleIndex}
-            className="bg-background w-[72.53px] h-[72.53px] mt-3 rounded-full flex items-center justify-center text-white text-[40px] "
+            className={`bg-background w-[73.53px] h-[73.53px] mt-3 rounded-full flex items-center justify-center text-white text-[40px] ${
+              matchedNumbers.includes(number) ? "bg-yellow" : "bg-background"
+            } ${clickedCircle === circleIndex ? "bg-gray" : ""}`}
             onClick={() => {
               show(circleIndex);
             }}
@@ -109,11 +136,7 @@ function Game() {
         );
       }
 
-      table.push(
-        <div key={i} className="flex gap-y-4">
-          {circles}
-        </div>
-      );
+      table.push(circles);
     }
 
     return table;
@@ -123,22 +146,20 @@ function Game() {
       matchedNumbers.length === numbers.length / 2 &&
       numbers.length / 2 > 0
     ) {
-      stopTimer();
+      stopTimer(myInterval);
       setGameEnded(true);
     }
+
+    return () => {
+      stopTimer(interval);
+    };
   }, [matchedNumbers, numbers.length]);
 
-  function startTimer() {
-    const intervalId = setInterval(() => {
-      setTimer((prevTimer) => prevTimer + 0.5);
-    }, 1000);
-    return () => clearInterval(intervalId);
+  function stopTimer(interval) {
+    clearInterval(interval);
   }
   function showMenu() {
     setMenu(!menu);
-  }
-  function stopTimer() {
-    // clearInterval(startTimer());
   }
 
   function refresh() {
@@ -159,11 +180,15 @@ function Game() {
             </h1>
           </div>
         </div>
-        <div className="mt-[85px] ml-5 mr-5">{generateTable()}</div>
+        <div className="mt-[85px] flex  gap-x-3 flex-wrap ">
+          {generateTable()}
+        </div>
         <div className="flex gap-6 mt-[100px] justify-center">
           <div className="bg-gray pr-[35px] pl-[35px] pt-[10px] pb-[10px] rounded-[5px] justify-center items-center">
             <h1 className="text-tGray  text-[15px]">Time</h1>
-            <h1 className="text-center">{timer}</h1>
+            <h1 className="text-center">{`${minutes}:${seconds
+              .toString()
+              .padStart(2, "0")}`}</h1>
           </div>
           <div className="bg-gray pr-[35px] pl-[35px] pt-[10px] pb-[10px] rounded-[5px] justify-center items-center">
             <h1 className="text-tGray text-[15px]">Moves</h1>
@@ -183,7 +208,9 @@ function Game() {
                 <p className="text-[13px] text-center text-tGray p-0">
                   Time Elapsed
                 </p>
-                <p className="text-background">{timer}</p>
+                <p className="text-background">{`${minutes}:${seconds
+                  .toString()
+                  .padStart(2, "0")}`}</p>
               </div>
               <div className="mt-2 flex flex-row justify-between bg-gray rounded-lg p-[14px]">
                 <p className="text-[13px] text-center text-tGray p-0">
@@ -234,5 +261,4 @@ function Game() {
     </>
   );
 }
-
 export default Game;
