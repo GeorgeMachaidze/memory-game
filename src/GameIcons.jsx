@@ -2,24 +2,62 @@ import { useLocation } from "react-router-dom";
 import React, { useState, useEffect } from "react";
 import { Form, Link } from "react-router-dom";
 
-function Game() {
+import shepherd from "../public/icons/australian-shepherd.png";
+import beagle from "../public/icons/beagle.png";
+import bullTerrier from "../public/icons/bull-terrier.png";
+import bulldog from "../public/icons/bulldog.png";
+import chihuahua from "../public/icons/chihuahua.png";
+import corgi from "../public/icons/corgi.png";
+import dachshund from "../public/icons/dachshund.png";
+import dalmatian from "../public/icons/dalmatian.png";
+import frenchBulldog from "../public/icons/french-bulldog.png";
+import greatDane from "../public/icons/great-dane.png";
+import jackRussellTerrier from "../public/icons/jack-russell-terrier.png";
+import labradorRetriever from "../public/icons/labrador-retriever.png";
+import pitbull from "../public/icons/pitbull.png";
+import rottweiler from "../public/icons/rottweiler.png";
+import sharPei from "../public/icons/shar-pei.png";
+import shibaInu from "../public/icons/shiba-inu.png";
+import siberianhusky from "../public/icons/siberian-husky.png";
+import yorkshireTerrier from "../public/icons/yorkshire-terrier.png";
+
+function GameIcons() {
   const location = useLocation();
+  const iconArray = [
+    shepherd,
+    beagle,
+    bullTerrier,
+    bulldog,
+    chihuahua,
+    corgi,
+    dachshund,
+    dalmatian,
+    frenchBulldog,
+    greatDane,
+    jackRussellTerrier,
+    labradorRetriever,
+    pitbull,
+    rottweiler,
+    sharPei,
+    shibaInu,
+    siberianhusky,
+    yorkshireTerrier,
+  ];
   const [clickedCircle, setClickedCircle] = useState(null);
-  const [numbers, setNumbers] = useState([]);
-  const [userChosenNumbers, setUserChosenNumbers] = useState([]);
+  const [icons, setIcons] = useState(iconArray);
+  const [userChosenIcons, setUserChosenIcons] = useState([]);
   const [prevClickedCircle, setPrevClickedCircle] = useState(null);
   const [isCircleClickable, setIsCircleClickable] = useState([]);
-  const [matchedNumbers, setMatchedNumbers] = useState([]);
+  const [matchedIcons, setMatchedIcons] = useState([]);
   const [minutes, setMinutes] = useState(0);
   const [seconds, setSeconds] = useState(0);
   const [myInterval, setMyInterval] = useState(null);
   const [gameEnded, setGameEnded] = useState(false);
   const [menu, setMenu] = useState(false);
-  const lastElement = userChosenNumbers[userChosenNumbers.length - 1];
+  const lastElement = userChosenIcons[userChosenIcons.length - 1];
   let interval;
 
   useEffect(() => {
-    generateNumbers();
     let interval = setInterval(() => {
       setSeconds((prevSeconds) => {
         if (prevSeconds === 59) {
@@ -38,23 +76,23 @@ function Game() {
   }, []);
 
   function show(index) {
-    let number = numbers[index];
-    if (!isCircleClickable[index] || matchedNumbers.includes(number)) {
+    let icon = icons[index];
+    if (!isCircleClickable[index] || matchedIcons.includes(icon)) {
       return;
     }
 
-    pushToArray(number);
+    pushToArray(icon);
 
-    if (number !== lastElement) {
+    if (icon !== lastElement) {
       setIsCircleClickable((prevClickable) => {
         const updatedClickable = [...prevClickable];
         updatedClickable[prevClickedCircle] = true;
         return updatedClickable;
       });
     } else {
-      setClickedCircle(number);
+      setClickedCircle(icon);
       setPrevClickedCircle(lastElement);
-      setMatchedNumbers((prevMatched) => [...prevMatched, number]);
+      setMatchedIcons((prevMatched) => [...prevMatched, icon]);
     }
 
     if (clickedCircle !== null && clickedCircle !== index) {
@@ -69,8 +107,8 @@ function Game() {
     setPrevClickedCircle(index);
   }
 
-  const pushToArray = (number) => {
-    setUserChosenNumbers((prevArray) => [...prevArray, number]);
+  const pushToArray = (icon) => {
+    setUserChosenIcons((prevArray) => [...prevArray, icon]);
   };
 
   useEffect(() => {
@@ -81,37 +119,15 @@ function Game() {
     }
   }, [clickedCircle]);
 
-  function generateNumbers() {
-    const totalCircles =
-      location.state.settings.size * location.state.settings.size;
-    const halfCircles = Math.floor(totalCircles / 2);
-    const newNumbers = [];
-
-    for (let i = 0; i < halfCircles; i++) {
-      newNumbers.push(i + 1);
-    }
-    for (let i = 0; i < halfCircles; i++) {
-      newNumbers.push((i % halfCircles) + 1);
-    }
-    for (let i = newNumbers.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [newNumbers[i], newNumbers[j]] = [newNumbers[j], newNumbers[i]];
-    }
-
-    setNumbers(newNumbers);
-    setIsCircleClickable(new Array(totalCircles).fill(true));
-  }
-
   function generateTable() {
     const table = [];
-    let index = 0;
 
     for (let i = 0; i < location.state.settings.size; i++) {
       const circles = [];
 
       for (let j = 0; j < location.state.settings.size; j++) {
-        const circleIndex = index++;
-        const number = numbers[circleIndex];
+        const circleIndex = i * location.state.settings.size + j;
+        const icon = icons[circleIndex];
 
         circles.push(
           <div
@@ -119,33 +135,17 @@ function Game() {
             className={`bg-background ${
               location.state.settings.size === 4 ? "w-[74px] " : "w-[46px]"
             } ${location.state.settings.size === 4 ? "h-[74px]" : "h-[46px]"}
-            ${location.state.settings.size === 4 ? "h-[74px]" : "h-[46px]"}
-            
-            ${
-              matchedNumbers.includes(number)
-                ? "bg-yellow"
-                : clickedCircle === circleIndex
-                ? "bg-tGray"
-                : "bg-background"
-            } 
-             mt-3 rounded-full flex items-center justify-center text-white text-40px `}
-            onClick={() => {
-              show(circleIndex);
-            }}
+            rounded-full flex items-center justify-center text-white text-40px`}
           >
-            <span
+            <img
+              src={icon}
+              alt="icon"
               className={`${
-                matchedNumbers.includes(number) || clickedCircle === circleIndex
-                  ? ""
-                  : "hidden"
-              } ${
                 location.state.settings.size === 4
-                  ? "text-[40px]"
-                  : "text-[24px]"
+                  ? "w-[40px] h-[40px]"
+                  : "w-[24px] h-[24px]"
               }`}
-            >
-              {number}
-            </span>
+            />
           </div>
         );
       }
@@ -156,10 +156,7 @@ function Game() {
     return table;
   }
   useEffect(() => {
-    if (
-      matchedNumbers.length === numbers.length / 2 &&
-      numbers.length / 2 > 0
-    ) {
+    if (matchedIcons.length === icons.length / 2 && icons.length / 2 > 0) {
       stopTimer(myInterval);
       setGameEnded(true);
     }
@@ -167,7 +164,7 @@ function Game() {
     return () => {
       stopTimer(interval);
     };
-  }, [matchedNumbers, numbers.length]);
+  }, [matchedIcons, icons.length]);
 
   function stopTimer(interval) {
     clearInterval(interval);
@@ -209,7 +206,7 @@ function Game() {
           </div>
           <div className="bg-gray pr-[35px] pl-[35px] pt-[10px] pb-[10px] rounded-[5px] justify-center items-center">
             <h1 className="text-tGray text-[15px]">Moves</h1>
-            <h1 className="text-center">{userChosenNumbers.length}</h1>
+            <h1 className="text-center">{userChosenIcons.length}</h1>
           </div>
         </div>
         {gameEnded && (
@@ -278,4 +275,4 @@ function Game() {
     </>
   );
 }
-export default Game;
+export default GameIcons;
