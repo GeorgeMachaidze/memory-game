@@ -44,8 +44,9 @@ function GameIcons() {
     yorkshireTerrier,
   ];
   const [clickedCircle, setClickedCircle] = useState(null);
-  const [icons, setIcons] = useState(iconArray);
+  const [icons, setIcons] = useState([]);
   const [userChosenIcons, setUserChosenIcons] = useState([]);
+  const [flippedIcons, setFlippedIcons] = useState([]);
   const [prevClickedCircle, setPrevClickedCircle] = useState(null);
   const [isCircleClickable, setIsCircleClickable] = useState([]);
   const [matchedIcons, setMatchedIcons] = useState([]);
@@ -75,38 +76,32 @@ function GameIcons() {
     };
   }, []);
 
+  useEffect(() => {
+    const shuffledIcons = shuffleArray([...iconArray, ...iconArray]);
+    setIcons(shuffledIcons);
+  }, []);
+
   function show(index) {
     let icon = icons[index];
-    if (!isCircleClickable[index] || matchedIcons.includes(icon)) {
+
+    if (flippedIcons.includes(index) || matchedIcons.includes(icon)) {
       return;
     }
 
-    pushToArray(icon);
+    setFlippedIcons((prevFlipped) => [...prevFlipped, index]);
 
-    if (icon !== lastElement) {
-      setIsCircleClickable((prevClickable) => {
-        const updatedClickable = [...prevClickable];
-        updatedClickable[prevClickedCircle] = true;
-        return updatedClickable;
-      });
-    } else {
-      setClickedCircle(icon);
-      setPrevClickedCircle(lastElement);
-      setMatchedIcons((prevMatched) => [...prevMatched, icon]);
+    if (flippedIcons.length === 1) {
+      const prevIndex = flippedIcons[0];
+      const prevIcon = icons[prevIndex];
+
+      if (icon === prevIcon) {
+        setMatchedIcons((prevMatched) => [...prevMatched, icon]);
+        setFlippedIcons([]);
+      } else {
+        setPrevClickedCircle(index);
+      }
     }
-
-    if (clickedCircle !== null && clickedCircle !== index) {
-      setIsCircleClickable((prevClickable) => {
-        const updatedClickable = [...prevClickable];
-        updatedClickable[clickedCircle] = true;
-        return updatedClickable;
-      });
-    }
-
-    setClickedCircle(index);
-    setPrevClickedCircle(index);
   }
-
   const pushToArray = (icon) => {
     setUserChosenIcons((prevArray) => [...prevArray, icon]);
   };
@@ -119,6 +114,15 @@ function GameIcons() {
     }
   }, [clickedCircle]);
 
+  function shuffleArray(array) {
+    const newArray = [...array];
+    for (let i = newArray.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [newArray[i], newArray[j]] = [newArray[j], newArray[i]];
+    }
+    return newArray;
+  }
+
   function generateTable() {
     const table = [];
 
@@ -127,25 +131,32 @@ function GameIcons() {
 
       for (let j = 0; j < location.state.settings.size; j++) {
         const circleIndex = i * location.state.settings.size + j;
-        const icon = icons[circleIndex];
+        const iconIndex = Math.floor(circleIndex / 2);
+        const icon = icons[iconIndex];
+        const isFlipped = flippedIcons.includes(circleIndex);
+        const isMatched = matchedIcons.includes(icon);
 
         circles.push(
           <div
             key={circleIndex}
             className={`bg-background ${
               location.state.settings.size === 4 ? "w-[74px] " : "w-[46px]"
-            } ${location.state.settings.size === 4 ? "h-[74px]" : "h-[46px]"}
-            rounded-full flex items-center justify-center text-white text-40px`}
+            } ${
+              location.state.settings.size === 4 ? "h-[74px]" : "h-[46px]"
+            } rounded-full flex items-center justify-center text-white text-40px`}
+            onClick={() => show(circleIndex)}
           >
-            <img
-              src={icon}
-              alt="icon"
-              className={`${
-                location.state.settings.size === 4
-                  ? "w-[40px] h-[40px]"
-                  : "w-[24px] h-[24px]"
-              }`}
-            />
+            {isFlipped || isMatched || prevClickedCircle === circleIndex ? (
+              <img
+                src={icon}
+                alt="icon"
+                className={`${
+                  location.state.settings.size === 4
+                    ? "w-[40px] h-[40px]"
+                    : "w-[24px] h-[24px]"
+                }`}
+              />
+            ) : null}
           </div>
         );
       }
@@ -155,6 +166,7 @@ function GameIcons() {
 
     return table;
   }
+
   useEffect(() => {
     if (matchedIcons.length === icons.length / 2 && icons.length / 2 > 0) {
       stopTimer(myInterval);
@@ -169,6 +181,7 @@ function GameIcons() {
   function stopTimer(interval) {
     clearInterval(interval);
   }
+
   function showMenu() {
     setMenu(!menu);
   }
@@ -176,7 +189,6 @@ function GameIcons() {
   function refresh() {
     window.location.reload();
   }
-
   return (
     <>
       <div className="p-5">
