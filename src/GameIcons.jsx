@@ -44,7 +44,8 @@ function GameIcons() {
     yorkshireTerrier,
   ];
   const [clickedCircle, setClickedCircle] = useState(null);
-  const [icons, setIcons] = useState([]);
+  const [icons, setIcons] = useState(iconArray);
+  const [numbers, setNumbers] = useState([]);
   const [userChosenIcons, setUserChosenIcons] = useState([]);
   const [flippedIcons, setFlippedIcons] = useState([]);
   const [prevClickedCircle, setPrevClickedCircle] = useState(null);
@@ -59,6 +60,7 @@ function GameIcons() {
   let interval;
 
   useEffect(() => {
+    generateNumbers();
     let interval = setInterval(() => {
       setSeconds((prevSeconds) => {
         if (prevSeconds === 59) {
@@ -76,30 +78,39 @@ function GameIcons() {
     };
   }, []);
 
-  useEffect(() => {
-    const shuffledIcons = shuffleArray([...iconArray, ...iconArray]);
-    setIcons(shuffledIcons);
-  }, []);
-
   function show(index) {
-    let icon = icons[index];
+    const icon = icons[numbers[index]];
 
     if (flippedIcons.includes(index) || matchedIcons.includes(icon)) {
       return;
     }
 
-    setFlippedIcons((prevFlipped) => [...prevFlipped, index]);
+    // Show only the clicked circle
+    const newFlippedIcons = [...flippedIcons];
+    newFlippedIcons.push(index);
+    setFlippedIcons(newFlippedIcons);
 
-    if (flippedIcons.length === 1) {
-      const prevIndex = flippedIcons[0];
-      const prevIcon = icons[prevIndex];
+    // Check for a match
+    if (clickedCircle === null) {
+      // First icon clicked
+      setClickedCircle(index);
+    } else {
+      // Second icon clicked
+      const prevIcon = icons[numbers[clickedCircle]];
 
-      if (icon === prevIcon) {
-        setMatchedIcons((prevMatched) => [...prevMatched, icon]);
-        setFlippedIcons([]);
+      if (prevIcon === icon) {
+        // Match found
+        setMatchedIcons((prevMatchedIcons) => [...prevMatchedIcons, prevIcon]);
       } else {
-        setPrevClickedCircle(index);
+        // No match
+        setTimeout(() => {
+          // Hide the icons after a delay
+          setFlippedIcons([]);
+        }, 1000);
       }
+
+      // Reset the clicked circle state
+      setClickedCircle(null);
     }
   }
   const pushToArray = (icon) => {
@@ -114,55 +125,65 @@ function GameIcons() {
     }
   }, [clickedCircle]);
 
-  function shuffleArray(array) {
-    const newArray = [...array];
-    for (let i = newArray.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [newArray[i], newArray[j]] = [newArray[j], newArray[i]];
+  function generateNumbers() {
+    const totalCircles =
+      location.state.settings.size * location.state.settings.size;
+    const halfCircles = Math.floor(totalCircles / 2);
+    const newNumbers = [];
+
+    for (let i = 0; i < halfCircles; i++) {
+      newNumbers.push(i + 1);
     }
-    return newArray;
+    for (let i = 0; i < halfCircles; i++) {
+      newNumbers.push((i % halfCircles) + 1);
+    }
+    for (let i = newNumbers.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [newNumbers[i], newNumbers[j]] = [newNumbers[j], newNumbers[i]];
+    }
+
+    setNumbers(newNumbers);
+    setIsCircleClickable(new Array(totalCircles).fill(true));
   }
 
   function generateTable() {
     const table = [];
 
-    for (let i = 0; i < location.state.settings.size; i++) {
-      const circles = [];
+    const circles = [];
 
-      for (let j = 0; j < location.state.settings.size; j++) {
-        const circleIndex = i * location.state.settings.size + j;
-        const iconIndex = Math.floor(circleIndex / 2);
-        const icon = icons[iconIndex];
-        const isFlipped = flippedIcons.includes(circleIndex);
-        const isMatched = matchedIcons.includes(icon);
+    for (let j = 0; j < numbers.length; j++) {
+      const iconIndex = Math.floor(j / 2);
+      const icon = icons[iconIndex];
+      const isFlipped = flippedIcons.includes(j);
+      const isMatched = matchedIcons.includes(icon);
 
-        circles.push(
-          <div
-            key={circleIndex}
-            className={`bg-background ${
-              location.state.settings.size === 4 ? "w-[74px] " : "w-[46px]"
-            } ${
-              location.state.settings.size === 4 ? "h-[74px]" : "h-[46px]"
-            } rounded-full flex items-center justify-center text-white text-40px`}
-            onClick={() => show(circleIndex)}
-          >
-            {isFlipped || isMatched || prevClickedCircle === circleIndex ? (
-              <img
-                src={icon}
-                alt="icon"
-                className={`${
-                  location.state.settings.size === 4
-                    ? "w-[40px] h-[40px]"
-                    : "w-[24px] h-[24px]"
-                }`}
-              />
-            ) : null}
-          </div>
-        );
-      }
-
-      table.push(circles);
+      circles.push(
+        <div
+          key={j}
+          className={`bg-background ${
+            location.state.settings.size === 4 ? "w-[74px] " : "w-[46px]"
+          } ${
+            location.state.settings.size === 4 ? "h-[74px]" : "h-[46px]"
+          } rounded-full flex items-center justify-center text-white text-40px`}
+          onClick={() => show(j)}
+        >
+          {(flippedIcons.includes(j) ||
+            matchedIcons.includes(icons[numbers[j]])) && (
+            <img
+              src={iconArray[numbers[j]]}
+              alt="icon"
+              className={`${
+                location.state.settings.size === 4
+                  ? "w-[40px] h-[40px]"
+                  : "w-[24px] h-[24px]"
+              }`}
+            />
+          )}
+        </div>
+      );
     }
+
+    table.push(circles);
 
     return table;
   }
