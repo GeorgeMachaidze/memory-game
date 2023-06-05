@@ -2,30 +2,30 @@ import { useLocation } from "react-router-dom";
 import React, { useState, useEffect } from "react";
 import { Form, Link } from "react-router-dom";
 
-import shepherd from "../public/icons/australian-shepherd.png";
-import beagle from "../public/icons/beagle.png";
-import bullTerrier from "../public/icons/bull-terrier.png";
-import bulldog from "../public/icons/bulldog.png";
-import chihuahua from "../public/icons/chihuahua.png";
-import corgi from "../public/icons/corgi.png";
-import dachshund from "../public/icons/dachshund.png";
-import dalmatian from "../public/icons/dalmatian.png";
-import frenchBulldog from "../public/icons/french-bulldog.png";
-import greatDane from "../public/icons/great-dane.png";
-import jackRussellTerrier from "../public/icons/jack-russell-terrier.png";
-import labradorRetriever from "../public/icons/labrador-retriever.png";
-import pitbull from "../public/icons/pitbull.png";
-import rottweiler from "../public/icons/rottweiler.png";
-import sharPei from "../public/icons/shar-pei.png";
-import shibaInu from "../public/icons/shiba-inu.png";
-import siberianhusky from "../public/icons/siberian-husky.png";
-import yorkshireTerrier from "../public/icons/yorkshire-terrier.png";
+import beagle from "/icons/beagle.png";
+import shepard from "/icons/australian-shepherd.png";
+import bullTerrier from "/icons/bull-terrier.png";
+import bulldog from "/icons/bulldog.png";
+import chihuahua from "/icons/chihuahua.png";
+import corgi from "/icons/corgi.png";
+import dachshund from "/icons/dachshund.png";
+import dalmatian from "/icons/dalmatian.png";
+import frenchBulldog from "/icons/french-bulldog.png";
+import greatDane from "/icons/great-dane.png";
+import jackRussellTerrier from "/icons/jack-russell-terrier.png";
+import labradorRetriever from "/icons/labrador-retriever.png";
+import pitbull from "/icons/pitbull.png";
+import rottweiler from "/icons/rottweiler.png";
+import sharPei from "/icons/shar-pei.png";
+import shibaInu from "/icons/shiba-inu.png";
+import siberianhusky from "/icons/siberian-husky.png";
+import yorkshireTerrier from "/icons/yorkshire-terrier.png";
 
 function GameIcons() {
   const location = useLocation();
   const iconArray = [
-    shepherd,
     beagle,
+    shepard,
     bullTerrier,
     bulldog,
     chihuahua,
@@ -48,7 +48,6 @@ function GameIcons() {
   const [numbers, setNumbers] = useState([]);
   const [userChosenIcons, setUserChosenIcons] = useState([]);
   const [flippedIcons, setFlippedIcons] = useState([]);
-  const [prevClickedCircle, setPrevClickedCircle] = useState(null);
   const [isCircleClickable, setIsCircleClickable] = useState([]);
   const [matchedIcons, setMatchedIcons] = useState([]);
   const [minutes, setMinutes] = useState(0);
@@ -56,6 +55,7 @@ function GameIcons() {
   const [myInterval, setMyInterval] = useState(null);
   const [gameEnded, setGameEnded] = useState(false);
   const [menu, setMenu] = useState(false);
+  const [isDelayActive, setIsDelayActive] = useState(false);
   const lastElement = userChosenIcons[userChosenIcons.length - 1];
   let interval;
 
@@ -81,35 +81,34 @@ function GameIcons() {
   function show(index) {
     const icon = icons[numbers[index]];
 
-    if (flippedIcons.includes(index) || matchedIcons.includes(icon)) {
+    if (
+      flippedIcons.includes(index) ||
+      matchedIcons.includes(icon) ||
+      isDelayActive
+    ) {
       return;
     }
-
-    // Show only the clicked circle
+    console.log(icon);
     const newFlippedIcons = [...flippedIcons];
     newFlippedIcons.push(index);
     setFlippedIcons(newFlippedIcons);
-
-    // Check for a match
+    pushToArray();
     if (clickedCircle === null) {
-      // First icon clicked
       setClickedCircle(index);
     } else {
-      // Second icon clicked
       const prevIcon = icons[numbers[clickedCircle]];
 
       if (prevIcon === icon) {
-        // Match found
         setMatchedIcons((prevMatchedIcons) => [...prevMatchedIcons, prevIcon]);
       } else {
-        // No match
+        setIsDelayActive(true);
+
         setTimeout(() => {
-          // Hide the icons after a delay
           setFlippedIcons([]);
+          setIsDelayActive(false);
         }, 1000);
       }
 
-      // Reset the clicked circle state
       setClickedCircle(null);
     }
   }
@@ -132,10 +131,10 @@ function GameIcons() {
     const newNumbers = [];
 
     for (let i = 0; i < halfCircles; i++) {
-      newNumbers.push(i + 1);
+      newNumbers.push(i);
     }
     for (let i = 0; i < halfCircles; i++) {
-      newNumbers.push((i % halfCircles) + 1);
+      newNumbers.push(i % halfCircles);
     }
     for (let i = newNumbers.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
@@ -144,6 +143,7 @@ function GameIcons() {
 
     setNumbers(newNumbers);
     setIsCircleClickable(new Array(totalCircles).fill(true));
+    console.log(newNumbers);
   }
 
   function generateTable() {
@@ -162,8 +162,13 @@ function GameIcons() {
           key={j}
           className={`bg-background ${
             location.state.settings.size === 4 ? "w-[74px] " : "w-[46px]"
-          } ${
-            location.state.settings.size === 4 ? "h-[74px]" : "h-[46px]"
+          } ${location.state.settings.size === 4 ? "h-[74px]" : "h-[46px]"} 
+          ${
+            matchedIcons.includes(icons[numbers[j]])
+              ? "bg-yellow"
+              : clickedCircle === j
+              ? "bg-tGray"
+              : "bg-background"
           } rounded-full flex items-center justify-center text-white text-40px`}
           onClick={() => show(j)}
         >
@@ -187,11 +192,22 @@ function GameIcons() {
 
     return table;
   }
-
+  console.log(matchedIcons.length);
+  console.log(icons.length);
   useEffect(() => {
-    if (matchedIcons.length === icons.length / 2 && icons.length / 2 > 0) {
-      stopTimer(myInterval);
-      setGameEnded(true);
+    if (location.state.settings.size === 6) {
+      if (icons.length === matchedIcons.length && icons.length / 2 > 0) {
+        stopTimer(myInterval);
+        setGameEnded(true);
+      }
+    } else {
+      if (
+        icons.length / 2 === matchedIcons.length + 1 &&
+        icons.length / 2 > 0
+      ) {
+        stopTimer(myInterval);
+        setGameEnded(true);
+      }
     }
 
     return () => {
@@ -225,8 +241,10 @@ function GameIcons() {
           </div>
         </div>
         <div
-          className={`mt-[85px] flex  gap-x-3 flex-wrap 
-        ${location.state.settings.size === 4 ? "gap-x-3" : "gap-x-[9px]"}`}
+          className={`mt-[85px] flex gap-x-3 flex-wrap 
+         ${location.state.settings.size === 4 ? "gap-x-3" : "gap-x-[9px]"}
+         ${location.state.settings.size === 4 ? "gap-y-3" : "gap-y-[9px]"}
+       `}
         >
           {generateTable()}
         </div>
@@ -264,7 +282,7 @@ function GameIcons() {
                   Moves Taken
                 </p>
                 <p className="text-background">
-                  {userChosenNumbers.length} Moves
+                  {userChosenIcons.length} Moves
                 </p>
               </div>
               <div
