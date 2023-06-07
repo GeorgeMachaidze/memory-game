@@ -9,7 +9,15 @@ function Start() {
     players: 1,
     size: 4,
   });
-  const gamePagePath = settings.theme === "Icons" ? "/GameIcons" : "/game";
+
+  const gamePagePath =
+    settings.players.length > 1 && settings.theme === "Numbers"
+      ? "/MultiplayerPageNumbers"
+      : settings.players.length > 1 && settings.theme === "Icons"
+      ? "MultiplayerPageIcons"
+      : settings.theme === "Icons"
+      ? "/GameIcons"
+      : "/game";
   const handleThemeChange = (newTheme) => {
     setSettings((prevState) => ({
       ...prevState,
@@ -44,7 +52,7 @@ function Start() {
           <div className="flex align-center justify-center m-6 mt-4 gap-3">
             <div
               className={`rounded-[26px] w-[50%] ${
-                settings.theme === "Numbers" ? "bg-background" : "bg-gray"
+                settings.theme === "Numbers" ? "bg-background" : "bg-tGray"
               }`}
               onClick={() => handleThemeChange("Numbers")}
             >
@@ -54,7 +62,7 @@ function Start() {
             </div>
             <div
               className={`rounded-[26px] w-[50%] ${
-                settings.theme === "Icons" ? "bg-background" : "bg-gray"
+                settings.theme === "Icons" ? "bg-background" : "bg-tGray"
               }`}
               onClick={() => handleThemeChange("Icons")}
             >
@@ -71,7 +79,7 @@ function Start() {
           <div className="flex align-center justify-center m-6 mt-4 gap-2">
             <div
               className={`rounded-[26px]  w-[25%] ${
-                settings.players === 1 ? "bg-background" : "bg-gray"
+                settings.players === 1 ? "bg-background" : "bg-tGray"
               }`}
               onClick={() => handlePlayersChange(1)}
             >
@@ -81,9 +89,14 @@ function Start() {
             </div>
             <div
               className={`rounded-[26px]  w-[25%] ${
-                settings.players === 2 ? "bg-background" : "bg-gray"
+                settings.players.length === 2 ? "bg-background" : "bg-tGray"
               }`}
-              onClick={() => handlePlayersChange(2)}
+              onClick={() =>
+                handlePlayersChange([
+                  { id: 0, score: 0 },
+                  { id: 1, score: 0 },
+                ])
+              }
             >
               <h1 className="text-center pt-3 pb-3 pl-7 pr-7 font-bold text-white text-[16px]">
                 2
@@ -91,9 +104,15 @@ function Start() {
             </div>
             <div
               className={`rounded-[26px]  w-[25%] ${
-                settings.players === 3 ? "bg-background" : "bg-gray"
+                settings.players.length === 3 ? "bg-background" : "bg-tGray"
               }`}
-              onClick={() => handlePlayersChange(3)}
+              onClick={() =>
+                handlePlayersChange([
+                  { id: 0, score: 0 },
+                  { id: 1, score: 0 },
+                  { id: 2, score: 0 },
+                ])
+              }
             >
               <h1 className="text-center pt-3 pb-3 pl-7 pr-7 font-bold text-white text-[16px]">
                 3
@@ -101,9 +120,16 @@ function Start() {
             </div>
             <div
               className={`rounded-[26px]  w-[25%] ${
-                settings.players === 4 ? "bg-background" : "bg-gray"
+                settings.players.length === 4 ? "bg-background" : "bg-tGray"
               }`}
-              onClick={() => handlePlayersChange(4)}
+              onClick={() =>
+                handlePlayersChange([
+                  { id: 0, score: 0 },
+                  { id: 1, score: 0 },
+                  { id: 2, score: 0 },
+                  { id: 3, score: 0 },
+                ])
+              }
             >
               <h1 className="text-center pt-3 pb-3 pl-7 pr-7 font-bold text-white text-[16px]">
                 4
@@ -116,7 +142,7 @@ function Start() {
           <div className="flex align-center justify-center m-6 mt-4 gap-3">
             <div
               className={`rounded-[26px] w-[50%] ${
-                settings.size === 4 ? "bg-background" : "bg-gray"
+                settings.size === 4 ? "bg-background" : "bg-tGray"
               }`}
               onClick={() => handleSizeChange(4)}
             >
@@ -126,7 +152,7 @@ function Start() {
             </div>
             <div
               className={`rounded-[26px] w-[50%] ${
-                settings.size === 6 ? "bg-background" : "bg-gray"
+                settings.size === 6 ? "bg-background" : "bg-tGray"
               }`}
               onClick={() => handleSizeChange(6)}
             >
