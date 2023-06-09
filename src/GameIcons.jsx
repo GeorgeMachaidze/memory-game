@@ -88,7 +88,7 @@ function GameIcons() {
     ) {
       return;
     }
-    console.log(icon);
+
     const newFlippedIcons = [...flippedIcons];
     newFlippedIcons.push(index);
     setFlippedIcons(newFlippedIcons);
@@ -192,8 +192,7 @@ function GameIcons() {
 
     return table;
   }
-  console.log(matchedIcons.length);
-  console.log(icons.length);
+
   useEffect(() => {
     if (location.state.settings.size === 6) {
       if (icons.length === matchedIcons.length && icons.length / 2 > 0) {

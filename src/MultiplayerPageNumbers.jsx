@@ -21,7 +21,7 @@ function Game() {
   );
   const lastElement = userChosenNumbers[userChosenNumbers.length - 1];
   const [playerIndex, setPlayerIndex] = useState(0);
-
+  const sortedPlayers = players.slice().sort((a, b) => b.score - a.score);
   let interval;
 
   useEffect(() => {
@@ -46,20 +46,21 @@ function Game() {
   function show(index) {
     let number = numbers[index];
 
-    if (!isCircleClickable[index] || matchedNumbers.includes(number)) {
-      return;
-    }
-
     pushToArray(number);
 
     if (number !== lastElement) {
-      console.log(playerIndex);
-      if (playerIndex === location.state.settings.players.length - 1) {
-        setPlayerIndex(0);
-        setPlayerTurn(location.state.settings.players[0]);
-      } else {
-        setPlayerIndex((prevIndex) => prevIndex + 1);
-        setPlayerTurn(location.state.settings.players[playerIndex]);
+      if (userChosenNumbers.length % 2 === 1) {
+        if (playerIndex === location.state.settings.players.length - 1) {
+          setPlayerIndex(0);
+          setPlayerTurn(location.state.settings.players[0]);
+        } else {
+          setPlayerIndex((prevIndex) => prevIndex + 1);
+          setPlayerTurn(location.state.settings.players[playerIndex]);
+        }
+        setTimeout(() => {
+          setClickedCircle(null);
+          setUserChosenNumbers([]);
+        }, 1000);
       }
       setIsCircleClickable((prevClickable) => {
         const updatedClickable = [...prevClickable];
@@ -81,7 +82,6 @@ function Game() {
         return updatedClickable;
       });
     }
-
     setClickedCircle(index);
     setPrevClickedCircle(index);
   }
@@ -131,8 +131,11 @@ function Game() {
         const number = numbers[circleIndex];
 
         circles.push(
-          <div
+          <button
             key={circleIndex}
+            disabled={
+              matchedNumbers.includes(number) || clickedCircle === circleIndex
+            }
             className={`bg-background ${
               location.state.settings.size === 4 ? "w-[74px] " : "w-[46px]"
             } ${location.state.settings.size === 4 ? "h-[74px]" : "h-[46px]"}
@@ -163,7 +166,7 @@ function Game() {
             >
               {number}
             </span>
-          </div>
+          </button>
         );
       }
 
@@ -222,9 +225,13 @@ function Game() {
             return (
               <div
                 key={par.id}
-                className="flex gap-6 mt-[100px] justify-center"
+                className={"flex gap-6 mt-[100px] justify-center "}
               >
-                <div className="bg-gray pr-[20px] pl-[20px] pt-[10px] pb-[10px] rounded-[5px] justify-center items-center">
+                <div
+                  className={`bg-gray pr-[20px] pl-[20px] pt-[10px] pb-[10px] rounded-[5px] justify-center items-center ${
+                    playerIndex === par.id ? "bg-yellow" : ""
+                  }`}
+                >
                   <h1 className="text-tGray text-[15px]">P{par.id + 1}</h1>
                   <h1 className="text-center text-background text-[24px]">
                     {par.score}
@@ -239,27 +246,45 @@ function Game() {
           <div className="fixed top-0 left-0 w-screen h-screen flex items-center justify-center bg-black bg-opacity-50">
             <div className="bg-white fixed top-0  flex flex-col  mt-[146px] pt-[32px] pb-[24px] pl-[24px] pr-[24px] rounded-lg">
               <h1 className="text-2xl font-bold text-background text-center">
-                You did it!
+                {sortedPlayers[0].score === sortedPlayers[1].score
+                  ? "It's a Tie!"
+                  : "Player " + (sortedPlayers[0].id + 1) + " Winner "}
               </h1>
               <p className="text-center text-[14px] text-tGray">
-                Game over! Here’s how you got on…
+                Game over! Here are the results…
               </p>
-              <div className="mt-[24px] flex flex-row justify-between bg-gray rounded-lg p-[14px]">
-                <p className="text-[13px] text-center text-tGray p-0">
-                  Time Elapsed
-                </p>
-                <p className="text-background">{`${minutes}:${seconds
-                  .toString()
-                  .padStart(2, "0")}`}</p>
-              </div>
-              <div className="mt-2 flex flex-row justify-between bg-gray rounded-lg p-[14px]">
-                <p className="text-[13px] text-center text-tGray p-0">
-                  Moves Taken
-                </p>
-                <p className="text-background">
-                  {userChosenNumbers.length} Moves
-                </p>
-              </div>
+              {sortedPlayers.map((player, index) => {
+                // Determine the highest score
+                let highestScore = sortedPlayers[0].score;
+
+                // Set the color based on the score comparison
+                let textColor =
+                  player.score === highestScore
+                    ? "text-white"
+                    : "text-[13px] text-center text-tGray";
+                let bgColor =
+                  player.score === highestScore ? "bg-background" : "bg-dark";
+
+                // Label the winner
+                let winnerLabel =
+                  player.score === highestScore ? "(Winner)" : "";
+
+                return (
+                  <div key={player.id}>
+                    <div
+                      className={`mt-2 flex flex-row justify-between rounded-lg p-[14px] ${bgColor}`}
+                    >
+                      <p className={`text-[13px] text-center p-0 ${textColor}`}>
+                        Player {sortedPlayers[index].id + 1} {winnerLabel}
+                      </p>
+                      <p className={`${textColor}`}>
+                        {sortedPlayers[index].score} Pairs
+                      </p>
+                    </div>
+                  </div>
+                );
+              })}
+
               <div
                 className="bg-yellow rounded-[26px] mt-[24px] pt-3 pb-3"
                 onClick={refresh}
