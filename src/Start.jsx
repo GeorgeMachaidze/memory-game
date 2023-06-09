@@ -14,7 +14,7 @@ function Start() {
     settings.players.length > 1 && settings.theme === "Numbers"
       ? "/MultiplayerPageNumbers"
       : settings.players.length > 1 && settings.theme === "Icons"
-      ? "MultiplayerPageIcons"
+      ? "/MultiplayerPageIcons"
       : settings.theme === "Icons"
       ? "/GameIcons"
       : "/game";

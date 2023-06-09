@@ -68,7 +68,6 @@ function Game() {
         return updatedClickable;
       });
     } else {
-      console.log(playerIndex);
       players[playerIndex].score++;
       setClickedCircle(number);
       setPrevClickedCircle(lastElement);
@@ -254,10 +253,8 @@ function Game() {
                 Game over! Here are the results…
               </p>
               {sortedPlayers.map((player, index) => {
-                // Determine the highest score
                 let highestScore = sortedPlayers[0].score;
 
-                // Set the color based on the score comparison
                 let textColor =
                   player.score === highestScore
                     ? "text-white"
@@ -265,7 +262,6 @@ function Game() {
                 let bgColor =
                   player.score === highestScore ? "bg-background" : "bg-dark";
 
-                // Label the winner
                 let winnerLabel =
                   player.score === highestScore ? "(Winner)" : "";
 

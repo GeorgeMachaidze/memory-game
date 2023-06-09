@@ -143,7 +143,6 @@ function GameIcons() {
 
     setNumbers(newNumbers);
     setIsCircleClickable(new Array(totalCircles).fill(true));
-    console.log(newNumbers);
   }
 
   function generateTable() {
