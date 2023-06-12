@@ -160,8 +160,14 @@ function GameIcons() {
         <div
           key={j}
           className={`bg-background ${
-            location.state.settings.size === 4 ? "w-[74px] " : "w-[46px]"
-          } ${location.state.settings.size === 4 ? "h-[74px]" : "h-[46px]"} 
+            location.state.settings.size === 4
+              ? "w-[74px] md:w-[120px] "
+              : "w-[46px]"
+          } ${
+            location.state.settings.size === 4
+              ? "h-[74px] md:h-[120px]"
+              : "h-[46px]"
+          } 
           ${
             matchedIcons.includes(icons[numbers[j]])
               ? "bg-yellow"
@@ -178,7 +184,7 @@ function GameIcons() {
               alt="icon"
               className={`${
                 location.state.settings.size === 4
-                  ? "w-[40px] h-[40px]"
+                  ? "w-[40px] h-[40px] md:h-[80px] md:w-[80px] "
                   : "w-[24px] h-[24px]"
               }`}
             />
@@ -226,34 +232,55 @@ function GameIcons() {
   }
   return (
     <>
-      <div className="p-5">
+      <div className="p-5 md:p-[38px]">
         <div className="flex justify-between items-center">
-          <h1 className="text-[24px]">memory</h1>
-          <div className="bg-yellow rounded-[26px]">
-            <h1
-              className="text-[16px] pt-2 pb-2 pl-4 pr-4 text-white"
-              onClick={showMenu}
-            >
-              Menu
-            </h1>
-          </div>
+          <h1 className="text-[24px] md:text-[40px] text-background">memory</h1>
+          {window.innerWidth < 768 ? (
+            <div className="bg-yellow rounded-[26px]">
+              <h1
+                className="text-[16px] pt-2 pb-2 pl-4 pr-4 text-white"
+                onClick={showMenu}
+              >
+                Menu
+              </h1>
+            </div>
+          ) : (
+            <div className="flex gap-[16px]  ">
+              <div onClick={refresh} className="bg-yellow rounded-[36px]">
+                <h1 className="text-[26px] text-white text-center pl-10 pr-10 pt-4 pb-4">
+                  Restart
+                </h1>
+              </div>
+              <Link to={{ pathname: "/" }}>
+                <div className="bg-gray rounded-[36px]">
+                  <h1 className="text-[26px] text-background text-center pl-10 pr-10 pt-4 pb-4">
+                    New Game
+                  </h1>
+                </div>
+              </Link>
+            </div>
+          )}
         </div>
         <div
-          className={`mt-[85px] flex gap-x-3 flex-wrap 
-         ${location.state.settings.size === 4 ? "gap-x-3" : "gap-x-[9px]"}
+          className={`mt-[85px] md:mt-[157px] flex gap-x-3 flex-wrap md:ml-[10%] md:mr-[10%]
+         ${
+           location.state.settings.size === 4
+             ? "gap-x-3 md:gap-x-5"
+             : "gap-x-[9px]"
+         }
          ${location.state.settings.size === 4 ? "gap-y-3" : "gap-y-[9px]"}
        `}
         >
           {generateTable()}
         </div>
-        <div className="flex gap-6 mt-[100px] justify-center">
-          <div className="bg-gray pr-[35px] pl-[35px] pt-[10px] pb-[10px] rounded-[5px] justify-center items-center">
-            <h1 className="text-tGray  text-[15px]">Time</h1>
-            <h1 className="text-center">{`${minutes}:${seconds
+        <div className="flex gap-6 mt-[100px] justify-center md:gap-[50px]">
+          <div className="bg-gray pr-[35px] pl-[35px] pt-[10px] pb-[10px] rounded-[5px] justify-center items-center md:rounded-[10px] md:gap-[105px] md:flex md:justify-between md:pr-[25px] md:pl-[25px]">
+            <h1 className="text-tGray  text-[15px] md:text-[18px]">Time</h1>
+            <h1 className="text-center md:text-[32px]">{`${minutes}:${seconds
               .toString()
               .padStart(2, "0")}`}</h1>
           </div>
-          <div className="bg-gray pr-[35px] pl-[35px] pt-[10px] pb-[10px] rounded-[5px] justify-center items-center">
+          <div className="bg-gray pr-[35px] pl-[35px] pt-[10px] pb-[10px] rounded-[5px] justify-center items-center md:rounded-[10px] md:gap-[105px] md:flex md:justify-between">
             <h1 className="text-tGray text-[15px]">Moves</h1>
             <h1 className="text-center">{userChosenIcons.length}</h1>
           </div>
