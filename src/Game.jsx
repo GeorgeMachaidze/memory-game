@@ -119,16 +119,16 @@ function Game() {
             className={`bg-background ${
               location.state.settings.size === 4
                 ? "w-[74px] md:w-[120px] "
-                : "w-[46px]"
+                : "w-[46px] md:w-[82px]"
             } ${
               location.state.settings.size === 4
                 ? "h-[74px] md:h-[120px]"
-                : "h-[46px]"
+                : "h-[46px] md:h-[82px]"
             }
             ${
               location.state.settings.size === 4
                 ? "h-[74px] md:w-[120px]"
-                : "h-[46px]"
+                : "h-[46px] md:h-[82px]"
             }
             
             ${
@@ -151,7 +151,7 @@ function Game() {
               } ${
                 location.state.settings.size === 4
                   ? "text-[40px] md:text-[56px]"
-                  : "text-[24px]"
+                  : "text-[24px] md:text-[44px]"
               }`}
             >
               {number}
@@ -224,11 +224,11 @@ function Game() {
           )}
         </div>
         <div
-          className={`mt-[85px] md:mt-[157px] flex gap-x-3 md:gap-x-5 md:ml-[10%] md:mr-[10%] flex-wrap 
+          className={`mt-[85px] md:mt-[157px] flex gap-x-3 md:gap-x-5  flex-wrap 
         ${
           location.state.settings.size === 4
-            ? "gap-x-3 md:gap-x-5"
-            : "gap-x-[9px]"
+            ? "gap-x-3 md:gap-x-5 md:mt-[157px] md:ml-[10%] md:mr-[10%]"
+            : "gap-x-[9px] md:gap-x-[16px] md:mt-[121px] md:ml-[8%] md:mr-[8%]"
         }`}
         >
           {generateTable()}
@@ -272,7 +272,6 @@ function Game() {
                   {userChosenNumbers.length} Moves
                 </p>
               </div>
-              <div></div>
               <div className="md:flex md:justify-center md:w-full md:mt-10 md:gap-[14px] md:mb-[70px]">
                 <div
                   className="bg-yellow rounded-[26px] mt-[24px] pt-3 pb-3 md:pl-[100px] md:pr-[100px] md:mt-0 "

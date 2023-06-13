@@ -136,9 +136,19 @@ function Game() {
               matchedNumbers.includes(number) || clickedCircle === circleIndex
             }
             className={`bg-background ${
-              location.state.settings.size === 4 ? "w-[74px] " : "w-[46px]"
-            } ${location.state.settings.size === 4 ? "h-[74px]" : "h-[46px]"}
-            ${location.state.settings.size === 4 ? "h-[74px]" : "h-[46px]"}
+              location.state.settings.size === 4
+                ? "w-[74px] md:w-[120px] "
+                : "w-[46px] md:w-[82px]"
+            } ${
+              location.state.settings.size === 4
+                ? "h-[74px] md:h-[120px]"
+                : "h-[46px] md:h-[82px]"
+            }
+            ${
+              location.state.settings.size === 4
+                ? "h-[74px] md:w-[120px]"
+                : "h-[46px] md:h-[82px]"
+            }
             
             ${
               matchedNumbers.includes(number)
@@ -159,8 +169,8 @@ function Game() {
                   : "hidden"
               } ${
                 location.state.settings.size === 4
-                  ? "text-[40px]"
-                  : "text-[24px]"
+                  ? "text-[40px] md:text-[56px]"
+                  : "text-[24px] md:text-[44px]"
               }`}
             >
               {number}
@@ -201,21 +211,42 @@ function Game() {
 
   return (
     <>
-      <div className="p-5">
+      <div className="p-5 md:p-[38px]">
         <div className="flex justify-between items-center">
-          <h1 className="text-[24px]">memory</h1>
-          <div className="bg-yellow rounded-[26px]">
-            <h1
-              className="text-[16px] pt-2 pb-2 pl-4 pr-4 text-white"
-              onClick={showMenu}
-            >
-              Menu
-            </h1>
-          </div>
+          <h1 className="text-[24px] md:text-[40px] text-background">memory</h1>
+          {window.innerWidth < 768 ? (
+            <div className="bg-yellow rounded-[26px]">
+              <h1
+                className="text-[16px] pt-2 pb-2 pl-4 pr-4 text-white"
+                onClick={showMenu}
+              >
+                Menu
+              </h1>
+            </div>
+          ) : (
+            <div className="flex gap-[16px]  ">
+              <div onClick={refresh} className="bg-yellow rounded-[36px]">
+                <h1 className="text-[26px] text-white text-center pl-10 pr-10 pt-4 pb-4">
+                  Restart
+                </h1>
+              </div>
+              <Link to={{ pathname: "/" }}>
+                <div className="bg-gray rounded-[36px]">
+                  <h1 className="text-[26px] text-background text-center pl-10 pr-10 pt-4 pb-4">
+                    New Game
+                  </h1>
+                </div>
+              </Link>
+            </div>
+          )}
         </div>
         <div
-          className={`mt-[85px] flex  gap-x-3 flex-wrap 
-        ${location.state.settings.size === 4 ? "gap-x-3" : "gap-x-[9px]"}`}
+          className={`mt-[85px] flex md:mt-[157px] gap-x-3 flex-wrap 
+        ${
+          location.state.settings.size === 4
+            ? "gap-x-3 md:gap-x-5 md:mt-[157px] md:ml-[10%] md:mr-[10%]"
+            : "gap-x-[9px] md:gap-x-[16px] md:mt-[121px] md:ml-[8%] md:mr-[8%]"
+        }`}
         >
           {generateTable()}
         </div>
@@ -227,12 +258,18 @@ function Game() {
                 className={"flex gap-6 mt-[100px] justify-center "}
               >
                 <div
-                  className={`bg-gray pr-[20px] pl-[20px] pt-[10px] pb-[10px] rounded-[5px] justify-center items-center ${
+                  className={`bg-gray pr-[20px] pl-[20px] pt-[10px] pb-[10px] rounded-[5px] justify-center items-center md:items-start md:flex  md:flex-col md:pr-0 ${
                     playerIndex === par.id ? "bg-yellow" : ""
                   }`}
                 >
-                  <h1 className="text-tGray text-[15px]">P{par.id + 1}</h1>
-                  <h1 className="text-center text-background text-[24px]">
+                  {window.innerWidth < 768 ? (
+                    <h1 className="text-tGray text-[15px]">P{par.id + 1}</h1>
+                  ) : (
+                    <h1 className="text-tGray text-[15px] md:mr-[75px]">
+                      Player {par.id + 1}
+                    </h1>
+                  )}
+                  <h1 className="text-center text-background text-[24px] md:text-left">
                     {par.score}
                   </h1>
                 </div>
@@ -243,13 +280,13 @@ function Game() {
 
         {gameEnded && (
           <div className="fixed top-0 left-0 w-screen h-screen flex items-center justify-center bg-black bg-opacity-50">
-            <div className="bg-white fixed top-0  flex flex-col  mt-[146px] pt-[32px] pb-[24px] pl-[24px] pr-[24px] rounded-lg">
-              <h1 className="text-2xl font-bold text-background text-center">
+            <div className="bg-white fixed top-0  flex flex-col  mt-[146px] pt-[32px] pb-[24px] pl-[24px] pr-[24px] rounded-lg md:ml-[50px] md:rounded-[20px] md:mr-[50px] md:pt-[51px] md:pr-[8%] md:pl-[8%]  md:mt-[161px]">
+              <h1 className="text-2xl font-bold text-background text-center md:text-[48px] ">
                 {sortedPlayers[0].score === sortedPlayers[1].score
                   ? "It's a Tie!"
                   : "Player " + (sortedPlayers[0].id + 1) + " Winner "}
               </h1>
-              <p className="text-center text-[14px] text-tGray">
+              <p className="text-center text-[14px] text-tGray md:mt-[20px] md:mb-[40px] md:text-[18px]">
                 Game over! Here are the results…
               </p>
               {sortedPlayers.map((player, index) => {
@@ -260,7 +297,7 @@ function Game() {
                     ? "text-white"
                     : "text-[13px] text-center text-tGray";
                 let bgColor =
-                  player.score === highestScore ? "bg-background" : "bg-dark";
+                  player.score === highestScore ? "bg-background" : "bg-gray";
 
                 let winnerLabel =
                   player.score === highestScore ? "(Winner)" : "";
@@ -268,12 +305,14 @@ function Game() {
                 return (
                   <div key={player.id}>
                     <div
-                      className={`mt-2 flex flex-row justify-between rounded-lg p-[14px] ${bgColor}`}
+                      className={`mt-2 flex flex-row justify-between rounded-lg p-[14px]  ${bgColor}`}
                     >
-                      <p className={`text-[13px] text-center p-0 ${textColor}`}>
+                      <p
+                        className={`text-[13px] text-center p-0 md:text-[18px] md:self-center ${textColor}`}
+                      >
                         Player {sortedPlayers[index].id + 1} {winnerLabel}
                       </p>
-                      <p className={`${textColor}`}>
+                      <p className={`${textColor} md:text-[32px]`}>
                         {sortedPlayers[index].score} Pairs
                       </p>
                     </div>
@@ -281,17 +320,23 @@ function Game() {
                 );
               })}
 
-              <div
-                className="bg-yellow rounded-[26px] mt-[24px] pt-3 pb-3"
-                onClick={refresh}
-              >
-                <p className="text-center text-white">Restart</p>
-              </div>
-              <Link to={{ pathname: "/" }}>
-                <div className="bg-gray rounded-[26px] mt-[16px] pt-3 pb-3">
-                  <p className="text-center text-background">Setup New Game</p>
+              <div className="md:flex md:justify-center md:w-full md:mt-10 md:gap-[14px] md:mb-[70px]">
+                <div
+                  className="bg-yellow rounded-[26px] mt-[24px] pt-3 pb-3 md:pl-[100px] md:pr-[100px] md:mt-0 "
+                  onClick={refresh}
+                >
+                  <p className="text-center text-white md:text-[20px]">
+                    Restart
+                  </p>
                 </div>
-              </Link>
+                <Link to={{ pathname: "/" }}>
+                  <div className="bg-gray rounded-[26px] mt-[16px] pt-3 pb-3 md:pl-[42px] md:pr-[42px] md:mt-0">
+                    <p className="text-center text-background md:text-[20px]">
+                      Setup New Game
+                    </p>
+                  </div>
+                </Link>
+              </div>
             </div>
           </div>
         )}

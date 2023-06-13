@@ -162,11 +162,11 @@ function GameIcons() {
           className={`bg-background ${
             location.state.settings.size === 4
               ? "w-[74px] md:w-[120px] "
-              : "w-[46px]"
+              : "w-[46px] md:w-[82px]"
           } ${
             location.state.settings.size === 4
               ? "h-[74px] md:h-[120px]"
-              : "h-[46px]"
+              : "h-[46px] md:h-[82px]"
           } 
           ${
             matchedIcons.includes(icons[numbers[j]])
@@ -185,7 +185,7 @@ function GameIcons() {
               className={`${
                 location.state.settings.size === 4
                   ? "w-[40px] h-[40px] md:h-[80px] md:w-[80px] "
-                  : "w-[24px] h-[24px]"
+                  : "w-[24px] h-[24px] md:h-[50px] md:w-[50px]"
               }`}
             />
           )}
@@ -262,11 +262,11 @@ function GameIcons() {
           )}
         </div>
         <div
-          className={`mt-[85px] md:mt-[157px] flex gap-x-3 flex-wrap md:ml-[10%] md:mr-[10%]
+          className={`mt-[85px] md:mt-[157px] flex gap-x-3 md:gap-x-5  flex-wrap 
          ${
            location.state.settings.size === 4
-             ? "gap-x-3 md:gap-x-5"
-             : "gap-x-[9px]"
+             ? "gap-x-3 md:gap-x-5 md:mt-[157px] md:ml-[10%] md:mr-[10%]"
+             : "gap-x-[9px] md:gap-x-[16px] md:mt-[121px] md:ml-[8%] md:mr-[8%]"
          }
          ${location.state.settings.size === 4 ? "gap-y-3" : "gap-y-[9px]"}
        `}
@@ -281,46 +281,54 @@ function GameIcons() {
               .padStart(2, "0")}`}</h1>
           </div>
           <div className="bg-gray pr-[35px] pl-[35px] pt-[10px] pb-[10px] rounded-[5px] justify-center items-center md:rounded-[10px] md:gap-[105px] md:flex md:justify-between">
-            <h1 className="text-tGray text-[15px]">Moves</h1>
-            <h1 className="text-center">{userChosenIcons.length}</h1>
+            <h1 className="text-tGray text-[15px] md:text-[18px]">Moves</h1>
+            <h1 className="text-center md:text-[32px]">
+              {userChosenIcons.length}
+            </h1>
           </div>
         </div>
         {gameEnded && (
           <div className="fixed top-0 left-0 w-screen h-screen flex items-center justify-center bg-black bg-opacity-50">
-            <div className="bg-white fixed top-0  flex flex-col  mt-[146px] pt-[32px] pb-[24px] pl-[24px] pr-[24px] rounded-lg">
-              <h1 className="text-2xl font-bold text-background text-center">
+            <div className="bg-white fixed top-0  flex flex-col  mt-[146px] pt-[32px] pb-[24px] pl-[24px] pr-[24px] rounded-lg md:ml-[50px] md:rounded-[20px] md:mr-[50px] md:pt-[51px] md:pr-[8%] md:pl-[8%]  md:mt-[257px]">
+              <h1 className="text-2xl font-bold text-background text-center md:text-[48px]">
                 You did it!
               </h1>
-              <p className="text-center text-[14px] text-tGray">
+              <p className="text-center text-[14px] text-tGray md:mt-[20px] md:text-[18px]">
                 Game over! Here’s how you got on…
               </p>
-              <div className="mt-[24px] flex flex-row justify-between bg-gray rounded-lg p-[14px]">
-                <p className="text-[13px] text-center text-tGray p-0">
+              <div className="mt-[24px] flex flex-row justify-between bg-gray rounded-lg p-[14px] md:gap-[300px]">
+                <p className="text-[13px] text-center text-tGray p-0 md:text-[18px] md:self-center md:text-[18px]">
                   Time Elapsed
                 </p>
-                <p className="text-background">{`${minutes}:${seconds
+                <p className="text-background md:text-[32px]">{`${minutes}:${seconds
                   .toString()
                   .padStart(2, "0")}`}</p>
               </div>
-              <div className="mt-2 flex flex-row justify-between bg-gray rounded-lg p-[14px]">
-                <p className="text-[13px] text-center text-tGray p-0">
+              <div className="mt-2 flex flex-row justify-between bg-gray rounded-lg p-[14px] md:mt-4">
+                <p className="text-[13px] text-center text-tGray p-0 md:self-center md:text-[18px]">
                   Moves Taken
                 </p>
-                <p className="text-background">
+                <p className="text-background md:text-[32px]">
                   {userChosenIcons.length} Moves
                 </p>
               </div>
-              <div
-                className="bg-yellow rounded-[26px] mt-[24px] pt-3 pb-3"
-                onClick={refresh}
-              >
-                <p className="text-center text-white">Restart</p>
-              </div>
-              <Link to={{ pathname: "/" }}>
-                <div className="bg-gray rounded-[26px] mt-[16px] pt-3 pb-3">
-                  <p className="text-center text-background">Setup New Game</p>
+              <div className="md:flex md:justify-center md:w-full md:mt-10 md:gap-[14px] md:mb-[70px]">
+                <div
+                  className="bg-yellow rounded-[26px] mt-[24px] pt-3 pb-3 md:pl-[100px] md:pr-[100px] md:mt-0 "
+                  onClick={refresh}
+                >
+                  <p className="text-center text-white md:text-[20px]">
+                    Restart
+                  </p>
                 </div>
-              </Link>
+                <Link to={{ pathname: "/" }}>
+                  <div className="bg-gray rounded-[26px] mt-[16px] pt-3 pb-3 md:pl-[42px] md:pr-[42px] md:mt-0">
+                    <p className="text-center text-background md:text-[20px]">
+                      Setup New Game
+                    </p>
+                  </div>
+                </Link>
+              </div>
             </div>
           </div>
         )}
