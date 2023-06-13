@@ -5,7 +5,7 @@ import {
   Navigate,
 } from "react-router-dom";
 import "./App.css";
-import Start from "./start";
+import Start from "./Home";
 import Game from "./Game";
 import GameIcons from "./gameIcons";
 import MultiplayerPageNumbers from "./MultiplayerPageNumbers";
