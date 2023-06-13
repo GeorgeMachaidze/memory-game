@@ -7,7 +7,7 @@ import {
 import "./App.css";
 import Start from "./Home";
 import Game from "./Game";
-import GameIcons from "./gameIcons";
+import GameIcons from "./Icons";
 import MultiplayerPageNumbers from "./MultiplayerPageNumbers";
 import MultiplayerPageIcons from "./MultiplayerPageIcons";
 function App() {
