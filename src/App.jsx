@@ -6,7 +6,7 @@ import {
 } from "react-router-dom";
 import "./App.css";
 import Start from "./start";
-import Game from "./game";
+import Game from "./Game";
 import GameIcons from "./gameIcons";
 import MultiplayerPageNumbers from "./MultiplayerPageNumbers";
 import MultiplayerPageIcons from "./MultiplayerPageIcons";
@@ -15,15 +15,15 @@ function App() {
     <Router>
       <Routes>
         <Route path="/" element={<Navigate to="/start" />} />
-        <Route path="/start" element={<Start />} />
-        <Route path="/game" element={<Game />} />
-        <Route path="/gameIcons" element={<GameIcons />} />
+        <Route path="/Start" element={<Start />} />
+        <Route path="/Game" element={<Game />} />
+        <Route path="/GameIcons" element={<GameIcons />} />
         <Route
-          path="/multiplayerPageNumbers"
+          path="/MultiplayerPageNumbers"
           element={<MultiplayerPageNumbers />}
         />
         <Route
-          path="/multiplayerPageIcons"
+          path="/MultiplayerPageIcons"
           element={<MultiplayerPageIcons />}
         />
       </Routes>

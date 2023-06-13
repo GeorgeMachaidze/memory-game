@@ -262,13 +262,16 @@ function MultiplayerPageIcons() {
             </div>
           ) : (
             <div className="flex gap-[16px]  ">
-              <div onClick={refresh} className="bg-yellow rounded-[36px]">
+              <div
+                onClick={refresh}
+                className="bg-yellow rounded-[36px] lg:hover:bg-hoverYellow"
+              >
                 <h1 className="text-[26px] text-white text-center pl-10 pr-10 pt-4 pb-4">
                   Restart
                 </h1>
               </div>
               <Link to={{ pathname: "/" }}>
-                <div className="bg-gray rounded-[36px]">
+                <div className="bg-gray rounded-[36px] lg:hover:bg-hoverBlue">
                   <h1 className="text-[26px] text-background text-center pl-10 pr-10 pt-4 pb-4">
                     New Game
                   </h1>
