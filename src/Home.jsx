@@ -9,7 +9,7 @@ function Start() {
     players: 1,
     size: 4,
   });
-  //test
+
   const gamePagePath =
     settings.players.length > 1 && settings.theme === "Numbers"
       ? "/MultiplayerPageNumbers"
