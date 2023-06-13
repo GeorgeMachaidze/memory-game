@@ -211,7 +211,7 @@ function Game() {
 
   return (
     <>
-      <div className="p-5 md:p-[38px]">
+      <div className="p-5 md:p-[38px] lg:p-[175px] lg:pt-[68px]">
         <div className="flex justify-between items-center">
           <h1 className="text-[24px] md:text-[40px] text-background">memory</h1>
           {window.innerWidth < 768 ? (
@@ -241,11 +241,11 @@ function Game() {
           )}
         </div>
         <div
-          className={`mt-[85px] flex md:mt-[157px] gap-x-3 flex-wrap 
+          className={`mt-[85px] flex md:mt-[157px] gap-x-3 flex-wrap lg:mt-[105px]
         ${
           location.state.settings.size === 4
-            ? "gap-x-3 md:gap-x-5 md:mt-[157px] md:ml-[10%] md:mr-[10%]"
-            : "gap-x-[9px] md:gap-x-[16px] md:mt-[121px] md:ml-[8%] md:mr-[8%]"
+            ? "gap-x-3 md:gap-x-5 md:mt-[157px] md:ml-[10%] md:mr-[10%] lg:ml-[25%] lg:mr-[15%]"
+            : "gap-x-[9px] md:gap-x-[16px] md:mt-[121px] md:ml-[8%] md:mr-[8%] lg:ml-[25%] lg:mr-[15%]"
         }`}
         >
           {generateTable()}

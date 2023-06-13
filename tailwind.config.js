@@ -8,6 +8,8 @@ export default {
         yellow: "#FDA214",
         gray: "rgba(223, 231, 236, 1)",
         tGray: "#7191A5",
+        hoverBlue: "#6395B8",
+        hoverYellow: "#FFB84A",
       },
     },
   },
